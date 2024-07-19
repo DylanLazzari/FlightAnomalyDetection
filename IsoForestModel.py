@@ -103,7 +103,7 @@ data['Anomaly_OCSVM'] = data['Anomaly_OCSVM'].apply(lambda x: 1 if x == -1 else 
 # We use Plotly for interactive visualizations
 fig = go.Figure()
 
-# Plot normal flight paths
+# Plot normal flight path (pretend this one heavily fueled plane LOL)
 fig.add_trace(go.Scattergeo(
     lon=data[data['Anomaly_IF'] == 0]['Longitude'],
     lat=data[data['Anomaly_IF'] == 0]['Latitude'],

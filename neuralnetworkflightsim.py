@@ -32,13 +32,14 @@ preprocessor = ColumnTransformer(
         ('cat', categorical_transformer, categorical_features)
     ])
 
-# Apply preprocessing
+# Fit the preprocessor to the data and transform the data accordingly
+# 'Fitting' means calculating the necessary parameters from the data
 data_preprocessed = preprocessor.fit_transform(data)
 
 # Generate column names for the resulting DataFrame
 onehot_encoded_columns = preprocessor.named_transformers_['cat'].get_feature_names_out(categorical_features)
 processed_columns = numerical_features.tolist() + onehot_encoded_columns.tolist()
-data_preprocessed = pd.DataFrame(data_preprocessed, columns=processed_columns)
+data_preprocessed = pd.DataFrame(data_preprocessed, columns=processed_columns) # This is creating your new table with the preprocessed data names.
 
 # Split data into training and testing sets
 X_train, X_test = train_test_split(data_preprocessed, test_size=0.2, random_state=42)
