@@ -1,70 +1,75 @@
-# Flight Anomaly Detection
 
-This project uses machine learning techniques to detect anomalies in flight data. Specifically, it leverages an autoencoder neural network to identify unusual patterns and outliers in various flight parameters such as altitude, speed, and engine RPM.
+# Flight Data Anomaly Detection
+
+This project aims to detect anomalies in flight data using machine learning models, specifically the Isolation Forest and One-Class SVM. The dataset includes features like altitude, speed, engine RPM, weather conditions, and geographic coordinates. The data is preprocessed, engineered, and visualized to identify patterns and outliers.
 
 ## Table of Contents
-
-- [Introduction](#introduction)
-- [Dataset](#dataset)
-- [Requirements](#requirements)
-- [Usage](#usage)
-- [Results](#results)
+- [Installation](#installation)
+- [Data Description](#data-description)
+- [Preprocessing and Feature Engineering](#preprocessing-and-feature-engineering)
+- [Anomaly Detection](#anomaly-detection)
 - [Visualization](#visualization)
+- [Results](#results)
+- [Usage](#usage)
+- [License](#license)
 
-## Introduction
+## Installation
 
-Anomaly detection in flight data is crucial for ensuring safety and maintaining the performance of aircraft. This project demonstrates how to use an autoencoder, a type of neural network, to identify anomalies in flight data. The approach involves training the autoencoder on normal flight data to learn an efficient representation and then using reconstruction errors to detect anomalies.
+Ensure you have Python 3.7+ installed. Install the required packages using pip:
 
-## Dataset
+```bash
+pip install pandas numpy scikit-learn matplotlib seaborn geopandas shap plotly
+```
 
-The dataset used in this project includes simulated flight data with various parameters:
-- Timestamp
-- Altitude (in feet)
-- Speed (in knots)
-- Heading (in degrees)
-- Temperature (in °C)
-- Pressure (in hPa)
-- Vibration (in g)
-- Latitude
-- Longitude
-- Roll (in degrees)
-- Pitch (in degrees)
-- Yaw (in degrees)
-- Engine RPM
-- Fuel Level (in percentage)
-- Weather Conditions (categorical)
+## Data Description
 
-Anomalies are artificially introduced to simulate abnormal flight conditions.
+The dataset, `enhanced_mock_flight_data.csv`, contains the following columns:
+- `Timestamp`: Date and time of the record
+- `Altitude`: Altitude of the flight
+- `Speed`: Speed of the flight
+- `Engine RPM`: Engine revolutions per minute
+- `Latitude`: Geographic latitude
+- `Longitude`: Geographic longitude
+- `Weather Conditions`: Categorical weather conditions
 
-## Requirements
+## Preprocessing and Feature Engineering
 
-- Python 3.8 or later
-- Pandas
-- NumPy
-- TensorFlow
-- scikit-learn
-- Matplotlib
-- Seaborn
+1. **Timestamp Conversion**: Converts the `Timestamp` column to a datetime format.
+2. **Lag Features**: Creates lag features for `Altitude`, `Speed`, and `Engine RPM` to capture previous time step values.
+3. **Rolling Standard Deviation**: Calculates the rolling standard deviation over a window of 3 time steps for `Altitude`, `Speed`, and `Engine RPM`.
+4. **Missing Values Imputation**: Fills missing values using K-Nearest Neighbors Imputer (KNN Imputer).
+5. **Data Transformation**: Applies StandardScaler to numerical features and OneHotEncoder to categorical features.
 
-## Usage
+## Anomaly Detection
 
-1. **Generate the dataset:**
+Two models are used to detect anomalies:
+1. **Isolation Forest**:
+    - `contamination=0.02`: Expects about 2% of the data to be anomalies.
+    - Outputs `-1` for anomalies and `1` for normal points.
+2. **One-Class SVM**:
+    - `gamma='auto'`, `nu=0.02`: Parameters for the SVM model.
+    - Outputs `-1` for anomalies and `1` for normal points.
 
-   Create a Python script to generate the mock flight data (this script should be in a separate file). The dataset includes parameters such as timestamp, altitude, speed, heading, temperature, pressure, vibration, latitude, longitude, roll, pitch, yaw, engine RPM, fuel level, and weather conditions. Anomalies are introduced randomly in the dataset.
-
-2. **Run the anomaly detection model:**
-
-   Execute the provided script to preprocess the data, train the autoencoder model, and detect anomalies. The script will output a CSV file containing the flight data along with anomaly labels.
-
-## Results
-
-The output of the model is a CSV file (`enhanced_mock_flight_data_with_anomalies_autoencoder.csv`) that includes the original flight data and an additional column indicating anomalies (1 for anomalies, 0 for normal data).
+The models are trained on 80% of the preprocessed data and tested on 20%.
 
 ## Visualization
 
-The script generates visualizations to help understand the detected anomalies:
-- **Altitude Anomalies:** A line plot of altitude over time with anomalies highlighted.
-- **Speed Anomalies:** A line plot of speed over time with anomalies highlighted.
-- **Engine RPM Anomalies:** A line plot of engine RPM over time with anomalies highlighted.
+Interactive visualizations are created using Plotly:
+- **Flight Paths**: Normal points and anomalies are plotted on a world map.
+- **Time Series**: Anomalies in `Altitude`, `Speed`, and `Engine RPM` over time are visualized.
 
-These plots use the seaborn library for better aesthetics and readability.
+## Results
+
+The results are saved to `enhanced_mock_flight_data_with_anomalies_advanced.csv`, including the anomaly labels from both models.
+
+## Usage
+
+Run the provided script to preprocess the data, detect anomalies, and visualize the results. Ensure your dataset is named `enhanced_mock_flight_data.csv` and placed in the same directory as the script.
+
+```bash
+python flight_data_anomaly_detection.py
+```
+
+## License
+
+This project is licensed under the MIT License.
